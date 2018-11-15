@@ -12,11 +12,23 @@
 
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n rooks placed such that none of them can attack each other
-
-
-
 window.findNRooksSolution = function(n) {
-  var solution = undefined; //fixme
+  var b = new Board({n: n});
+  
+  var hasAnyConflicts = function(b) {
+    return (b.hasAnyColConflicts() || b.hasAnyRowConflicts())
+  }
+  
+  for (var i = 0; i < b.rows().length; i++) {
+    for (var j = 0; j < b.rows().length; j++) {
+      b.togglePiece(i, j);
+      if (hasAnyConflicts(b)) {
+        b.togglePiece(i, j);
+      }
+    }
+  }
+  
+  var solution = b.rows();
 
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution;
@@ -24,7 +36,50 @@ window.findNRooksSolution = function(n) {
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
-  var solutionCount = undefined; //fixme
+  var solutionCount = 0;
+  var counter = 0;
+  
+  var hasAnyConflicts = function(b) {
+    return (b.hasAnyColConflicts() || b.hasAnyRowConflicts())
+  }
+  
+  var getNext = function(lastI, lastJ) {
+    if (lastJ === n - 1) {
+      return [lastI + 1, 0];
+    } else {
+      return [lastI, lastJ + 1];
+    }
+  };
+  
+  var findSolutions = function(b, counter, lastI, lastJ) {
+    if (counter === n) {
+      solutionCount++;
+      return;  
+    }
+    
+    [i, k] = getNext(lastI, lastJ);
+    var changedRow = false;
+    for (var i; i < n; i++) {
+      if (changedRow) {
+        var k = 0;
+      }
+      for (var j = k; j < n; j++) {
+        b.togglePiece(i, j);
+        if (hasAnyConflicts(b)) {
+          b.togglePiece(i, j);
+        } else {
+          findSolutions(b, counter + 1, i, j);
+        }
+      }
+      changedRow = true;
+    };
+  };
+  
+  for (var j = 0; j < n; j++) {
+    var b = new Board({n: n});
+    b.togglePiece(0, j);
+    findSolutions(b, 1, 0, j);
+  }
 
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
