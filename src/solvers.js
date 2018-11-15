@@ -57,19 +57,23 @@ window.countNRooksSolutions = function(n) {
       return;  
     }
     
-    [i, k] = getNext(lastI, lastJ);
+    var rows = b.rows();
+    
+    [i, j] = getNext(lastI, lastJ);
     var changedRow = false;
+    
     for (var i; i < n; i++) {
       if (changedRow) {
-        var k = 0;
+        var j = 0;
       }
-      for (var j = k; j < n; j++) {
+      for (var j; j < n; j++) {
         b.togglePiece(i, j);
-        if (hasAnyConflicts(b)) {
-          b.togglePiece(i, j);
-        } else {
-          findSolutions(b, counter + 1, i, j);
+        
+        if (!hasAnyConflicts(b)) {
+          findSolutions(b, counter + 1, i + 1, 0);
         }
+        
+        b.togglePiece(i, j);
       }
       changedRow = true;
     };
@@ -78,7 +82,7 @@ window.countNRooksSolutions = function(n) {
   for (var j = 0; j < n; j++) {
     var b = new Board({n: n});
     b.togglePiece(0, j);
-    findSolutions(b, 1, 0, j);
+    findSolutions(b, 1, 1, 0);
   }
 
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
