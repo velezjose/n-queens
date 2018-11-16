@@ -44,11 +44,11 @@ window.countNRooksSolutions = function(n) {
     for (var i; i < n; i++) {
       for (var j = 0; j < n; j++) {
         b.togglePiece(i, j);
-        
-        if (!b.hasAnyRooksConflicts()) {
-          findSolutions(b, counter + 1, i + 1);
+        if (!b.hasColConflictAt(j)) {
+          if (!b.hasAnyRooksConflicts()) {
+            findSolutions(b, counter + 1, i + 1);
+          }
         }
-        
         b.togglePiece(i, j);
       }
     };
@@ -112,6 +112,34 @@ window.findNQueensSolution = function(n) {
 window.countNQueensSolutions = function(n) {
   var solutionCount = 0; 
   
+  var majorDiagonalTopRowIndexes = function() {
+    var obj = {};
+    for (var i = 0; i < n; i++) {
+      var arr = [];
+      
+      for (var j = i; j < n; j++) {
+        arr.push(j);
+      }
+      
+      obj[i] = arr;
+    }
+    return obj;
+  }();
+  
+  var minorDiagonalTopRowIndexes = function() {
+    var obj = {};
+    for (var i = 0; i < n ; i++) {
+      var arr = [];
+      
+      for (var j = n - i - 1; j >= 0; j--) {
+        arr.push(j);
+      }
+      
+      obj[i] = arr;
+    }
+    return obj;
+  }();  
+  
   var findSolutions = function(b, counter, i) {
     if (counter === n) {
       solutionCount++;
@@ -124,10 +152,18 @@ window.countNQueensSolutions = function(n) {
       for (var j = 0; j < n; j++) {
         b.togglePiece(i, j);
         
-        if (!b.hasAnyQueensConflicts()) {
-          findSolutions(b, counter + 1, i + 1);
+        if (!b.hasColConflictAt(j)) {
+          var majorDiagonalTest = majorDiagonalTopRowIndexes[i].includes(j)
+            ? b.hasMajorDiagonalConflictAt.bind(b) : b.hasAnyMajorDiagonalConflicts.bind(b);
+            
+          var minorDiagonalTest = minorDiagonalTopRowIndexes[i].includes(j) 
+            ? b.hasMinorDiagonalConflictAt.bind(b) : b.hasAnyMinorDiagonalConflicts.bind(b);
+          
+          if (!majorDiagonalTest(j - i) 
+            && !minorDiagonalTest(j + i)) {
+            findSolutions(b, counter + 1, i + 1);
+          }
         }
-        
         b.togglePiece(i, j);
       }
     };
