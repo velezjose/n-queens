@@ -41,24 +41,17 @@ window.countNRooksSolutions = function(n) {
       return;  
     }
         
-    for (var i; i < n; i++) {
-      for (var j = 0; j < n; j++) {
-        b.togglePiece(i, j);
-        if (!b.hasColConflictAt(j)) {
-          if (!b.hasAnyRooksConflicts()) {
-            findSolutions(b, counter + 1, i + 1);
-          }
-        }
-        b.togglePiece(i, j);
+    for (var j = 0; j < n; j++) {
+      b.togglePiece(i, j);
+      if (!b.hasColConflictAt(j)) {
+        findSolutions(b, counter + 1, i + 1);
       }
-    };
+      b.togglePiece(i, j);
+    }
   };
   
-  for (var j = 0; j < n; j++) {
-    var b = new Board({n: n});
-    b.togglePiece(0, j);
-    findSolutions(b, 1, 1);
-  }
+  var b = new Board({n: n});
+  findSolutions(b, 0, 0);
 
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
@@ -75,20 +68,18 @@ window.findNQueensSolution = function(n) {
       return solution;
     }
 
-    for (var i; i < n; i++) {
-      for (var j = 0; j < n; j++) {
-        b.togglePiece(i, j);
-        
-        if (!b.hasAnyQueensConflicts()) {
-          var sol = findSolution(b, counter + 1, i + 1);
-          if (sol !== undefined) {
-            return sol;
-          }
-        } 
-        
-        b.togglePiece(i, j);
+    for (var j = 0; j < n; j++) {
+      b.togglePiece(i, j);
+      
+      if (!b.hasAnyQueensConflicts()) {
+        var sol = findSolution(b, counter + 1, i + 1);
+        if (sol !== undefined) {
+          return sol;
+        }
       } 
-    }
+      
+      b.togglePiece(i, j);
+    } 
   };
   
   for (var k = 0; k < n; k++) {
@@ -145,35 +136,28 @@ window.countNQueensSolutions = function(n) {
       solutionCount++;
       return;  
     }
-    
-    var rows = b.rows();
-    
-    for (var i; i < n; i++) {
-      for (var j = 0; j < n; j++) {
-        b.togglePiece(i, j);
         
-        if (!b.hasColConflictAt(j)) {
-          var majorDiagonalTest = majorDiagonalTopRowIndexes[i].includes(j)
-            ? b.hasMajorDiagonalConflictAt.bind(b) : b.hasAnyMajorDiagonalConflicts.bind(b);
-            
-          var minorDiagonalTest = minorDiagonalTopRowIndexes[i].includes(j) 
-            ? b.hasMinorDiagonalConflictAt.bind(b) : b.hasAnyMinorDiagonalConflicts.bind(b);
+    for (var j = 0; j < n; j++) {
+      b.togglePiece(i, j);
+      
+      if (!b.hasColConflictAt(j)) {
+        var majorDiagonalTest = majorDiagonalTopRowIndexes[i].includes(j)
+          ? b.hasMajorDiagonalConflictAt.bind(b) : b.hasAnyMajorDiagonalConflicts.bind(b);
           
-          if (!majorDiagonalTest(j - i) 
-            && !minorDiagonalTest(j + i)) {
-            findSolutions(b, counter + 1, i + 1);
-          }
+        var minorDiagonalTest = minorDiagonalTopRowIndexes[i].includes(j) 
+          ? b.hasMinorDiagonalConflictAt.bind(b) : b.hasAnyMinorDiagonalConflicts.bind(b);
+        
+        if (!majorDiagonalTest(j - i) 
+          && !minorDiagonalTest(j + i)) {
+          findSolutions(b, counter + 1, i + 1);
         }
-        b.togglePiece(i, j);
       }
-    };
+      b.togglePiece(i, j);
+    }
   };
   
-  for (var j = 0; j < n; j++) {
-    var b = new Board({n: n});
-    b.togglePiece(0, j);
-    findSolutions(b, 1, 1);
-  }
+  var b = new Board({n: n});
+  findSolutions(b, 0, 0);
   
   if (n === 0) {
     solutionCount = 1;

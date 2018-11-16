@@ -81,9 +81,7 @@
     hasRowConflictAt: function(rowIndex) {
       var row = this.rows()[rowIndex];
 
-      return _.filter(row, function(num) {
-        return num === 1;
-      }).length > 1;
+      return _.filter(row, num => num === 1).length > 1;
     },
 
     // test if any rows on this board contain conflicts
@@ -107,9 +105,7 @@
     hasColConflictAt: function(colIndex) {
       var col = _.pluck(this.rows(), colIndex);
 
-      return _.filter(col, function(num) {
-        return num === 1;
-      }).length > 1;
+      return _.filter(col, num => num === 1).length > 1;
     },
 
     // test if any columns on this board contain conflicts
@@ -134,18 +130,14 @@
       var majorDiagonal = [];
       var rows = rows || this.rows();
 
-      _.each(rows, function(row) {
-        // debugger;
+      _.each(rows, row => {
         if (row[majorDiagonalColumnIndexAtFirstRow] !== undefined) {
           majorDiagonal.push(row[majorDiagonalColumnIndexAtFirstRow]);
         }
         majorDiagonalColumnIndexAtFirstRow++;
       });
 
-      return _.filter(majorDiagonal, function(num) {
-        return num === 1;
-      }).length > 1;
-
+      return _.filter(majorDiagonal, num => num === 1).length > 1;
     },
 
     // test if any major diagonals on this board contain conflicts
@@ -180,23 +172,21 @@
       var rows = rows || this.rows();
       var minorDiagonal = [];
 
-      _.each(rows, function(row) {
+      _.each(rows, row => {
         if (row[minorDiagonalColumnIndexAtFirstRow] !== undefined) {
           minorDiagonal.push(row[minorDiagonalColumnIndexAtFirstRow]);
         }
         minorDiagonalColumnIndexAtFirstRow--;
       });
 
-      return _.filter(minorDiagonal, function(num) {
-        return num === 1;
-      }).length > 1;
+      return _.filter(minorDiagonal, num => num === 1).length > 1;
     },
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
       var boardCopy = this.rows().slice();
       for (var i = 0; i < boardCopy.length; i++) {
-        if(this.hasMinorDiagonalConflictAt(i)) {
+        if (this.hasMinorDiagonalConflictAt(i)) {
           return true;
         }
       }
@@ -210,7 +200,6 @@
         }
         boardCopy.shift();
       }
-      
       return false;
     }
 
