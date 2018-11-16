@@ -119,7 +119,7 @@ window.countNQueensSolutions = function(n) {
   
   var minorDiagonalTopRowIndexes = function() {
     var obj = {};
-    for (var i = 0; i < n ; i++) {
+    for (var i = 0; i < n; i++) {
       var arr = [];
       
       for (var j = n - i - 1; j >= 0; j--) {
